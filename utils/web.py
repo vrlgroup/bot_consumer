@@ -7,7 +7,6 @@ from utils.convert import *
 from utils.web import *
 from common.wait import *
 from env.widgets import *
-from common.variables import driver
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -22,7 +21,7 @@ def openBrowser(driver: webdriver, url: str):
     driver.get(url)
     return
 
-def selectElement(driver: webdriver, xpath: str):
+def findAndSelectElement(driver: webdriver, xpath: str):
     return WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath)))
 
 
@@ -37,22 +36,22 @@ def messageContainsEmoji(msg: str):
 
 
 def sendMessage(driver: webdriver, msg: str):
-    selectElement(driver, CHAT_INPUT_XPATH).send_keys(msg)
+    findAndSelectElement(driver, CHAT_INPUT_XPATH).send_keys(msg)
 
     if messageContainsEmoji(msg):
-        selectElement(driver, CHAT_INPUT_XPATH).send_keys(Keys.RETURN)
+        findAndSelectElement(driver, CHAT_INPUT_XPATH).send_keys(Keys.RETURN)
 
-    selectElement(driver, CHAT_INPUT_XPATH).send_keys(Keys.RETURN)
+    findAndSelectElement(driver, CHAT_INPUT_XPATH).send_keys(Keys.RETURN)
 
 
 def findAndOpenConversation(driver: webdriver, name: str):
-    selectElement(driver, SEARCHBAR_INPUT_XPATH).click()
-    selectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(name)
+    findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).click()
+    findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(name)
 
     wait(5, "Waiting results")
 
-    selectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(Keys.ARROW_DOWN)
-    selectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(Keys.RETURN)
+    findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(Keys.ARROW_DOWN)
+    findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(Keys.RETURN)
 
     return
 
@@ -62,24 +61,28 @@ def openPrivateGroup(driver: webdriver):
     findAndOpenConversation(driver, privateGroupName)
 
 
-def selectLatestMessages(driver: webdriver):
-    lastId = 1
-    _xpath = f"{FORWARD_GROUP_MESSAGE_DIV}/div[{lastId}]"
+def selectFirstMessages(driver: webdriver):
+    findAndSelectElement(driver, SELECT_GROUP_MESSAGES_XPATH)
 
-    try:
-        selectElement(driver, _xpath)
-        lastId+=1
-    except:
-        print(f"LastId {lastId}")
+    # wait(30, "Waiting to sync messages")
 
-    selectElement(driver, _xpath).click()
-    wait(2, "Nothing")
-    
+    path = "/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[3]/div[2]"
+    msgs = driver.find_elements(By.XPATH, path)
+    for message in msgs:
+        message.click()
+
+    path = "/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[3]/div[3]"
+    msgs = driver.find_elements(By.XPATH, path)
+    for message in msgs:
+        message.click()
+
+    findAndSelectElement(driver, "/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[4]/span").click()
+
     return
 
 
 def openForwardMessageModal(driver: webdriver):
-    selectElement(driver, GROUP_SETTINGS_XPATH).click()
-    selectElement(driver, SELECT_GROUP_MESSAGES_XPATH).click()
+    findAndSelectElement(driver, GROUP_SETTINGS_XPATH).click()
+    findAndSelectElement(driver, SELECT_GROUP_MESSAGES_XPATH).click()
 
     return

@@ -2,7 +2,6 @@ from utils.sheet import *
 from utils.convert import *
 from utils.web import *
 from common.wait import *
-from common.variables import *
 from env.widgets import *
 
 from selenium import webdriver
@@ -33,7 +32,7 @@ def main():
     sendMessage(driver, "Mensagem teste")
 
     openForwardMessageModal(driver)
-    selectLatestMessages(driver)
+    selectFirstMessages(driver)
 
     wait(20, "Finishing process")
 
