@@ -26,8 +26,6 @@ def findAndOpenConversation(driver: webdriver, name: str):
 
     return
 
-def openForwardMessageModal(driver: webdriver):
-    findAndSelectElement(driver, GROUP_SETTINGS_XPATH).click()
-    findAndSelectElement(driver, SELECT_GROUP_MESSAGES_XPATH).click()
-
-    return
+def enableSelectGroupMessages(driver: webdriver):
+    findAndSelectElement(driver, "/html/body/div[1]/div/div/div[4]/div/header/div[3]/div/div[2]/div").click()
+    findAndSelectElement(driver, "/html/body/div[1]/div/span[4]/div/ul/div/div/li[2]").click()

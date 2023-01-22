@@ -10,6 +10,7 @@ from .utils import findAndSelectElement
 from .utils import messageContainsEmoji
 from .widgets import *
 
+
 def sendMessage(driver: webdriver, msg: str):
     findAndSelectElement(driver, CHAT_INPUT_XPATH).send_keys(msg)
 
@@ -19,19 +20,8 @@ def sendMessage(driver: webdriver, msg: str):
     findAndSelectElement(driver, CHAT_INPUT_XPATH).send_keys(Keys.RETURN)
 
 
-def selectMessagesToForward(driver: webdriver):
-    findAndSelectElement(driver, SELECT_GROUP_MESSAGES_XPATH)
-
-    path = "/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[3]/div[2]"
+def findAndSelectMessageById(driver: webdriver, i: int):
+    path = f"{GROUP_MESSAGES_LIST_BASE_XPATH}/div[{i}]"
     msgs = driver.find_elements(By.XPATH, path)
     for message in msgs:
         message.click()
-
-    path = "/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[3]/div[3]"
-    msgs = driver.find_elements(By.XPATH, path)
-    for message in msgs:
-        message.click()
-
-    findAndSelectElement(driver, "/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[4]/span").click()
-
-    return

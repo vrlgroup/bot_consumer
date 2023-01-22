@@ -5,19 +5,19 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from common.wait import wait
-from internal.web.utils import openWebsite
-from internal.web.conversation import openPrivateConversation, openForwardMessageModal
-from internal.web.messages import sendMessage, selectMessagesToForward
+from common.wait import *
+from internal.web.utils import *
+from internal.web.conversation import *
+from internal.web.messages import *
 from internal.web.widgets import *
 from internal.web.config import *
+from internal.web.forward import *
 
-from internal.sheet.get import buildCsvToGroups
+
+from internal.sheet.get import *
 
 
 def main():
-    groups = buildCsvToGroups()
-
     service = configureDriver("/usr/bin/chromedriver")
     driver = webdriver.Chrome(service=service)
 
@@ -33,11 +33,18 @@ def main():
             didScanQrCode = False
 
     openPrivateConversation(driver)
-    sendMessage(driver, "Mensagem teste :rockets")
-    sendMessage(driver, "Mensagem teste")
+    # sendMessage(driver, "Mensagem teste :rockets")
+    # sendMessage(driver, "Mensagem teste")
 
-    openForwardMessageModal(driver)
+    enableSelectGroupMessages(driver)
+    wait(2, "waiting...")
+    
     selectMessagesToForward(driver)
+    findAndSelectElement(driver, FORWARD_MESSAGE_BUTTON_DURING_SELECT_MESSAGES).click()
+
+    groups = readCSVWithSuffix('001')
+    selectGroupsToForward(driver, groups)
+    findAndSelectElement(driver, FORWARDMODAL_SUBMIT_GROUPS_SELECTED).click()
 
     wait(20, "Finishing process")
 
