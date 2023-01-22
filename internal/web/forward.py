@@ -18,6 +18,7 @@ def selectGroupsToForward(driver: webdriver, groupsSuffixes: list[str]):
     for suffix in groupsSuffixes:
         findAndSelectElement(
             driver, FORWARDMODAL_SEARCHBAR_INPUT_XPATH).send_keys(suffix)
+            
         wait(1, "Waiting for result")
 
         findAndSelectElement(

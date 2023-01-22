@@ -16,8 +16,11 @@ GROUP_MESSAGES_LIST_BASE_XPATH = "/html/body/div[1]/div/div/div[4]/div/div[2]/di
 # Depois de abrir as configuracoes do grupo. tem um botao que tem a opcao de "selecionar mensagens" do chat
 SELECT_GROUP_MESSAGES_XPATH = "/html/body/div[1]/div/span[4]/div/ul/div/div/li[2]"
 
-# Botao de encaminhar mensagens selecionadas quando esta selecionando as mensagens do grupo
-FORWARD_MESSAGE_BUTTON_DURING_SELECT_MESSAGES = "/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[4]/span"
+# Botao de encaminhar mensagens selecionadas
+FORWARD_MESSAGE_BUTTON_DURING_SELECT_MESSAGES_XPATH = "/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[4]/span"
+
+# Botao de exluir mensagens selecionadas
+DELETE_MESSAGE_BUTTON_DURING_SELECT_MESSAGE_XPATH = "/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[3]"
 
 # Barra de pesquisa dentro do modal de encaminhar mensagens
 FORWARDMODAL_SEARCHBAR_INPUT_XPATH = "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div/div[2]/div/div[2]"
@@ -26,4 +29,6 @@ FORWARDMODAL_SEARCHBAR_INPUT_XPATH = "/html/body/div[1]/div/span[2]/div/div/div/
 FORWARDMODAL_FIRST_RESULT_AFTER_SEARCH_XPATH = "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[2]/div/div/div/div[2]/button"
 
 # Botao de encaminhar dentro do modal de encaminhamento
-FORWARDMODAL_SUBMIT_GROUPS_SELECTED = "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/span/div/div"
+FORWARDMODAL_SUBMIT_GROUPS_SELECTED_XPATH = "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/span/div/div"
+
+DELETE_ONLY_FOR_ME_BUTTON_XPATH = "/html/body/div[1]/div/span[2]/div/span/div/div/div/div/div/div[2]/div/div[2]/div"

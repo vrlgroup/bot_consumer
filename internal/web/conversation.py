@@ -17,9 +17,10 @@ def openPrivateConversation(driver: webdriver):
 
 def findAndOpenConversation(driver: webdriver, name: str):
     findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).click()
+    findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).clear()
     findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(name)
 
-    wait(5, "Waiting results")
+    wait(2, "Waiting results")
 
     findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(Keys.ARROW_DOWN)
     findAndSelectElement(driver, SEARCHBAR_INPUT_XPATH).send_keys(Keys.RETURN)

@@ -13,6 +13,8 @@ from internal.web.widgets import *
 from internal.web.config import *
 from internal.web.forward import *
 
+import math
+
 
 from internal.sheet.get import *
 
@@ -32,19 +34,49 @@ def main():
             wait(5, "User didn't scan qr code")
             didScanQrCode = False
 
-    openPrivateConversation(driver)
-    # sendMessage(driver, "Mensagem teste :rockets")
-    # sendMessage(driver, "Mensagem teste")
+    mustContinue = True
+    while mustContinue:
+        # openPrivateConversation(driver)
+        # sendMessage(driver, "Mensagem teste :rockets")
+        # sendMessage(driver, "Mensagem teste")
 
-    enableSelectGroupMessages(driver)
-    wait(2, "waiting...")
-    
-    selectMessagesToForward(driver)
-    findAndSelectElement(driver, FORWARD_MESSAGE_BUTTON_DURING_SELECT_MESSAGES).click()
+        groups = readCSVWithSuffix('001')
+        sliceSize = 2  # Mudar para 5
+        slicesToCut = math.ceil(len(groups)/sliceSize)
+        slices = []
+        for i in range(slicesToCut):
+            startSliceAt = sliceSize * i
+            endSliceAt = startSliceAt + sliceSize
+            slices.append(groups[startSliceAt:endSliceAt])
 
-    groups = readCSVWithSuffix('001')
-    selectGroupsToForward(driver, groups)
-    findAndSelectElement(driver, FORWARDMODAL_SUBMIT_GROUPS_SELECTED).click()
+        for groupSlices in slices:
+            openPrivateConversation(driver)
+            wait(5, "waiting...")
+
+            enableSelectGroupMessages(driver)
+            wait(5, "waiting...")
+
+            selectMessagesToForward(driver)
+            findAndSelectElement(
+                driver, FORWARD_MESSAGE_BUTTON_DURING_SELECT_MESSAGES_XPATH).click()
+
+            selectGroupsToForward(driver, groupSlices)
+            findAndSelectElement(
+                driver, FORWARDMODAL_SUBMIT_GROUPS_SELECTED_XPATH).click()
+
+        # BUG - Se for numero impar ta quebrando
+
+        openPrivateConversation(driver)
+        wait(1, "waiting...")
+        enableSelectGroupMessages(driver)
+        wait(1, "waiting...")
+        findAndSelectElement(
+            driver, DELETE_MESSAGE_BUTTON_DURING_SELECT_MESSAGE_XPATH).click()
+        wait(1, "waiting...")
+        findAndSelectElement(driver, DELETE_ONLY_FOR_ME_BUTTON_XPATH).click()
+
+        # Tentar buscar pelo id 5 e 6 novamente, se parar execucao, ok
+        mustContinue = False
 
     wait(20, "Finishing process")
 
