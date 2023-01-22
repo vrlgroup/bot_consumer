@@ -1,9 +1,9 @@
 import csv
-from sheet.utils import remove_row_useless_chars
+from .utils import remove_row_useless_chars
 
-def read_sheet(sheet_id='0') -> list:
+def read_sheet(sheet_id='001') -> list:
     rows = []
-    with open(f'../../docs/group_{sheet_id}.csv', 'r') as file:
+    with open(f'./internal/sheet/csv/group_{sheet_id}.csv', 'r') as file:
         csvreader = csv.reader(file)
 
         for row in csvreader:

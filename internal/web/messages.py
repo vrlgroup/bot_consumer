@@ -6,9 +6,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from common.wait import wait
-from web.utils import findAndSelectElement
-from web.utils import messageContainsEmoji
-from widgets import *
+from .utils import findAndSelectElement
+from .utils import messageContainsEmoji
+from .widgets import *
 
 def sendMessage(driver: webdriver, msg: str):
     findAndSelectElement(driver, CHAT_INPUT_XPATH).send_keys(msg)
@@ -19,7 +19,7 @@ def sendMessage(driver: webdriver, msg: str):
     findAndSelectElement(driver, CHAT_INPUT_XPATH).send_keys(Keys.RETURN)
 
 
-def selectFirstMessages(driver: webdriver):
+def selectMessagesToForward(driver: webdriver):
     findAndSelectElement(driver, SELECT_GROUP_MESSAGES_XPATH)
 
     path = "/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[3]/div[2]"
