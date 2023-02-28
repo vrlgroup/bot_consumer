@@ -15,7 +15,6 @@ from internal.web.forward import *
 
 import math
 
-
 from internal.sheet.get import *
 
 
@@ -51,7 +50,12 @@ def main():
 
         for groupSlices in slices:
             openPrivateConversation(driver)
-            wait(5, "waiting...")
+            sendMessage(driver, "TESTEEEE") # apagar depois
+
+            findAndOpenConversation(driver, "Omegle 2.0")
+            #sendMessage(driver, "TESTEEEE") # apagar depois
+
+            wait(80, "waiting...")
 
             enableSelectGroupMessages(driver)
             wait(5, "waiting...")
