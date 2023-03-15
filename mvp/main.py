@@ -31,31 +31,23 @@ Which preset you want use?
 
         foundSomeMessageContainer = False
         while foundSomeMessageContainer == False:
-            row_id = findLatestMessageFromChatList(driver, 3)
-            if row_id != 0:
-                foundSomeMessageContainer = True
-                break
+            k = 1
+            while k <= 6:
+                wait(1, "Waiting...")
+                row_id = findLatestMessageFromChatList(driver, k)
+                if row_id != 0 and row_id != None:
+                    foundSomeMessageContainer = True
+                    break
+                else:
+                    k += 1
 
-            row_id = findLatestMessageFromChatList(driver, 4)
-            if row_id != 0:
-                foundSomeMessageContainer = True
-                break
-
-            row_id = findLatestMessageFromChatList(driver, 5)
-            if row_id != 0:
-                foundSomeMessageContainer = True
-                break
-
-            row_id = findLatestMessageFromChatList(driver, 6)
-            if row_id != 0:
-                foundSomeMessageContainer = True
-                break
-            
             if row_id == 0:
                 foundSomeMessageContainer = False
                 wait(5, "Waiting to do other search")
-
-
+            else:
+                foundSomeMessageContainer = True
+                break
+ 
         for i, roundGroups in enumerate(slices):
             print(f"\nRound {i} running!")
 
@@ -64,86 +56,174 @@ Which preset you want use?
 
             forwardMessageByRound(driver, row_id, roundGroups)
 
-        # didDeleteMessage = False
-        # while didDeleteMessage == False:
-        #     try:
-        #         deleteMessageById(driver, row_id, privateGroupName)
-        #         didDeleteMessage = True
-        #     except:
-        #         wait(2, "Something wrong happen while deleting message")
+        didDeleteMessage = False
+        while didDeleteMessage == False:
+            try:
+                deleteMessageById(driver, row_id, privateGroupName)
+                didDeleteMessage = True
+                break
+            except:
+                wait(2, "Something wrong happen while deleting message")
+
 
 
 def findLatestMessageFromChatList(driver: webdriver, id: int) -> int:
     try:
         print(f"Trying with ID : {id}")
 
-        element = driver.find_element(By.XPATH, f"/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[2]/div[{id}]/div/div/div")
-        data_test_id = element.get_attribute("data-testid")
-        print(data_test_id)
+        selector = f"#main > div._2gzeB > div > div._5kRIK > div.n5hs2j7m.oq31bsqd.gx1rr48f.qh5tioqs > div:nth-child({id}) > div > div > div"
 
+        element = driver.find_element(By.CSS_SELECTOR, selector)
+        data_test_id = element.get_attribute("data-testid")
+        
         if "msg-container" in data_test_id:
+            print(f"Founded! {id}")
             return id
     except:
         return 0
 
 
 def selectGroupsFromForwardModal(driver: webdriver, groups: list[str]):
-    _searchbar = driver.find_element(By.XPATH, "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div/div[2]/div/div[1]/p")
+    _searchbar = driver.find_element(By.XPATH, "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div/div[2]/div/div/p")
 
     for groupName in groups:
         _searchbar.click()
-        _searchbar.clear()
         _searchbar.send_keys(groupName)
-
         wait(2, "Waiting to get groups")
 
         # firstGroupFromList
         driver.find_element(By.XPATH, "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[2]/div/div/div/div[2]/button/div[2]/div").click()
-
+        
+        _searchbar.send_keys(Keys.CONTROL, "a")
+        _searchbar.send_keys(Keys.BACKSPACE)
     return
 
 
-def deleteMessageById(driver: webdriver, row_id: int, privateGroupName: str):
+def deleteMessageById(driver: webdriver, _: int, privateGroupName: str):
     findAndOpenConversation(driver, privateGroupName)
     wait(5, "Preparing to delete message")
 
-    # threeDotsButton
-    driver.find_element(
-        By.XPATH, "/html/body/div[1]/div/div/div[4]/div/header/div[3]/div/div[2]/div/div/span").click()
+    row_id = 0
+    foundSomeMessageContainer = False
+    while foundSomeMessageContainer == False:
+        k = 1
+        while k <= 6:
+            wait(1, "Waiting...")
+            row_id = findLatestMessageFromChatList(driver, k)
+            if row_id != 0 and row_id != None:
+                foundSomeMessageContainer = True
+                break
+            else:
+                k += 1
 
-    # selectMessagesOption
-    k = 2
-    foundSelectMessagesBtn = False
-    while foundSelectMessagesBtn == False:
-        element = driver.find_element(
-            By.CSS_SELECTOR, f"#app > div > span:nth-child(4) > div > ul > div > div > li:nth-child({k}) > div")
-        
-        if "mi-select-messages" in element.get_attribute("data-testid"):
-            element.click()
-            foundSelectMessagesBtn = True
+        if row_id == 0:
+            foundSomeMessageContainer = False
+            wait(5, "Waiting to do other search")
         else:
-            wait(2, "Select messages btn not found")
+            foundSomeMessageContainer = True
+            break
+
+    openSelectMessages(driver)
+    didSelectMsg = False
+    while didSelectMsg == False:
+        wait(1, "Waiting...")
+        selector = f"/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[3]/div[{row_id}]/div/div/span/div/div"
+        try:
+            driver.find_element(By.XPATH, selector).click()
+            didSelectMsg = True
+            break
+        except:
+            print(f"Error while selecting msg {row_id}")
+            didSelectMsg = False
+
+    didClickToDelete = False
+    while didClickToDelete == False:
+        k = 1
+        while k <= 5:
+            selector = f"/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[{k}]/span"
+            try:
+                el = driver.find_element(By.XPATH, selector)
+                if "delete" in el.get_attribute("data-testid"):
+                    el.click()
+                    didClickToDelete = True
+                    break
+                else:
+                    didClickToDelete = False
+                    k += 1
+            except:
+                print("Fail to click to forward msgs")
+                didClickToDelete = False
+                k+=1
+        
+
+    didConfirm = False
+    while didConfirm == False:
+        k = 1
+        while k <= 2:
+            el = driver.find_element(By.XPATH, f"/html/body/div[1]/div/span[2]/div/span/div/div/div/div/div/div[2]/div/div[{k}]/div")
+            
+            if "popup-controls-delete" in el.get_attribute("data-testid"):
+                el.click()
+                didConfirm = True
+                break
+
             k += 1
 
-    # messageDiv
-    driver.find_element(
-        By.CSS_SELECTOR, f"#main > div._2gzeB > div > div._1Y114._5kRIK > div.n5hs2j7m.oq31bsqd.lqec2n0o.eu5j4lnj > div:nth-child({row_id})").click()
 
-    # trash button
-    driver.find_element(
-        By.XPATH, "/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[2]/span"
-    )
 
-    # confirm button
-    driver.find_element(
-        By.XPATH, "/html/body/div[1]/div/span[2]/div/span/div/div/div/div/div/div[2]/div[2]/div/div"
-    )
+def clickGroupThreeDots(driver : webdriver):
+    selector = "/html/body/div[1]/div/div/div[4]/div/header/div[3]/div/div[2]/div/div/span"
+    driver.find_element(By.XPATH, selector).click()
 
+def openSelectMessages(driver : webdriver) :
+    clickGroupThreeDots(driver)
+
+    k = 1
+    while k <= 5:
+        selector = f"/html/body/div[1]/div/span[4]/div/ul/div/div/li[{k}]"
+        try:
+            el = driver.find_element(By.XPATH, selector)
+            if "mi-select-messages" in el.get_attribute("data-testid"):
+                el.click()
+                wait(1, "Waiting to change page state, for select messages")
+                break
+        except:
+            k+=1
 
 def forwardMessageByRound(driver: webdriver, row_id: int, groupNames: list[str]):
-    jsSelector = f"/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[2]/div[{row_id}]/div/div/div/div[3]/div[1]/div/span"
-    rightForwardButton = driver.find_element(By.XPATH, jsSelector)
-    rightForwardButton.click()
+    openSelectMessages(driver)
+
+    didSelectMsg = False
+    while didSelectMsg == False:
+        wait(1, "Waiting...")
+        selector = f"/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[3]/div[{row_id}]/div/div/span/div/div"
+        try:
+            driver.find_element(By.XPATH, selector).click()
+            didSelectMsg = True
+            break
+        except:
+            print(f"Error while selecting msg {row_id}")
+            didSelectMsg = False
+
+    didClickToForward = False
+    while didClickToForward == False:
+        k = 1
+        while k <= 5:
+            selector = f"/html/body/div[1]/div/div/div[4]/div/span[2]/div/button[{k}]/span"
+            try:
+                el = driver.find_element(By.XPATH, selector)
+                if "forward" in el.get_attribute("data-testid"):
+                    el.click()
+                    didClickToForward = True
+                    break
+                else:
+                    didClickToForward = False
+            except:
+                print("Fail to click to forward msgs")
+                didClickToForward = False
+
+            k+=1
+        
 
     selectGroupsFromForwardModal(driver, groupNames)
 
