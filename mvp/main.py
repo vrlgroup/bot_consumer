@@ -77,9 +77,7 @@ def findLatestMessageFromChatList(driver: webdriver, id: int) -> int:
     try:
         print(f"Trying with ID : {id}")
 
-        element = driver.find_element(
-            By.CSS_SELECTOR, f"#main > div._2gzeB > div > div._5kRIK > div.n5hs2j7m.oq31bsqd.gx1rr48f.qh5tioqs > div:nth-child({id}) > div > div")
-
+        element = driver.find_element(By.XPATH, f"/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[2]/div[{id}]/div/div/div")
         data_test_id = element.get_attribute("data-testid")
         print(data_test_id)
 
@@ -90,8 +88,7 @@ def findLatestMessageFromChatList(driver: webdriver, id: int) -> int:
 
 
 def selectGroupsFromForwardModal(driver: webdriver, groups: list[str]):
-    _searchbar = driver.find_element(
-        By.CSS_SELECTOR, "#app > div > span:nth-child(2) > div > div > div > div > div > div > div > div:nth-child(2) > div > div > div._2vDPL > div > div.Er7QU.copyable-text.selectable-text")
+    _searchbar = driver.find_element(By.XPATH, "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[1]/div/div/div[2]/div/div[1]/p")
 
     for groupName in groups:
         _searchbar.click()
@@ -100,10 +97,8 @@ def selectGroupsFromForwardModal(driver: webdriver, groups: list[str]):
 
         wait(2, "Waiting to get groups")
 
-        # _firstGroupFromList
-        driver.find_element(
-            By.XPATH, "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[2]/div/div/div/div[2]/button"
-        ).click()
+        # firstGroupFromList
+        driver.find_element(By.XPATH, "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/div[2]/div/div/div/div[2]/button/div[2]/div").click()
 
     return
 
@@ -146,8 +141,8 @@ def deleteMessageById(driver: webdriver, row_id: int, privateGroupName: str):
 
 
 def forwardMessageByRound(driver: webdriver, row_id: int, groupNames: list[str]):
-    jsSelector = f"#main > div._2gzeB > div > div._5kRIK > div.n5hs2j7m.oq31bsqd.gx1rr48f.qh5tioqs > div:nth-child({row_id}) > div > div > div.p357zi0d.ktfrpxia.nu7pwgvd.fhf7t426.sap93d0t.gndfcl4n._1m68F > div:nth-child(1)"
-    rightForwardButton = driver.find_element(By.CSS_SELECTOR, jsSelector)
+    jsSelector = f"/html/body/div[1]/div/div/div[4]/div/div[2]/div/div[2]/div[2]/div[{row_id}]/div/div/div/div[3]/div[1]/div/span"
+    rightForwardButton = driver.find_element(By.XPATH, jsSelector)
     rightForwardButton.click()
 
     selectGroupsFromForwardModal(driver, groupNames)
@@ -157,8 +152,8 @@ def forwardMessageByRound(driver: webdriver, row_id: int, groupNames: list[str])
     didSubmit = False
     while didSubmit == False:
         try:
-            jsSelector = "#app > div > span:nth-child(2) > div > div > div > div > div > div > div > span > div > div > div"
-            submitButton = driver.find_element(By.CSS_SELECTOR, jsSelector)
+            xp = "/html/body/div[1]/div/span[2]/div/div/div/div/div/div/div/span/div/div/div"
+            submitButton = driver.find_element(By.XPATH, xp)
             submitButton.click()
             didSubmit = True
         except:

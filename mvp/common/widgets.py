@@ -1,5 +1,5 @@
 # Barra de pesquisa na sidebar
-SEARCHBAR_INPUT_XPATH = "/html/body/div[1]/div/div/div[3]/div/div[1]/div/div/div[2]/div/div[2]"
+SEARCHBAR_INPUT_XPATH = "/html/body/div[1]/div/div/div[3]/div/div[1]/div/div/div[2]/div/div[1]"
 
 # Input do chat quando a conversa esta aberta
 CHAT_INPUT_XPATH = "/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]"
